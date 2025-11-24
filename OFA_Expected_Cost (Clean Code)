@@ -1,0 +1,94 @@
+#include <bits/stdc++.h>
+#include <random>
+#include <iomanip>
+using namespace std;
+
+// --- Random Number Generator Setup ---
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+double random_double() {
+    return uniform_real_distribution<double>(0.0, 1.0)(rng);
+}
+
+int random_int(int n) {
+    return uniform_int_distribution<int>(0, n-1)(rng);
+}
+
+// --- Geometry Helpers ---
+double steps_between(int a, int b, int n) {
+    int forward = (b - a + n) % n;
+    int backward = (a - b + n) % n;
+    return min(forward, backward);
+}
+
+double edgewise_distance(int n, int e, double t, int v) {
+    int v1 = e;
+    int v2 = (e + 1) % n;
+    double dist1 = t + steps_between(v1, v, n);
+    double dist2 = (1.0 - t) + steps_between(v2, v, n);
+    return min(dist1, dist2);
+}
+
+int main() {
+    int n = 9;
+    int NUM_SAMPLES = 5000; 
+
+    cout << fixed << setprecision(3);
+
+    int N = 1 << n;
+    vector<double> V(N, 0.0);
+
+    vector<vector<int>> masks_by_pc(n+1);
+    for (int m=0; m<N; m++) 
+        masks_by_pc[__builtin_popcount(m)].push_back(m);
+
+    // === DP BACKWARD INDUCTION ===
+    for (int pc = n-1; pc >= 0; pc--) {
+        for (int mask : masks_by_pc[pc]) {
+            vector<int> freev;
+            for (int v=0; v<n; v++) 
+                if (!(mask & (1<<v))) freev.push_back(v);
+
+            double total_cost_accumulator = 0.0;
+
+            for (int k = 0; k < NUM_SAMPLES; k++) {
+                int e = random_int(n);     
+                double t = random_double(); 
+
+                double min_d = 1e18;
+                vector<int> ties;
+
+                for (int fv : freev) {
+                    double d = edgewise_distance(n, e, t, fv);
+                    if (d < min_d - 1e-9) {
+                        min_d = d;
+                        ties.clear();
+                        ties.push_back(fv);
+                    } else if (abs(d - min_d) < 1e-9) {
+                        ties.push_back(fv);
+                    }
+                }
+
+                int chosen_facility;
+                if (ties.size() == 1) {
+                    chosen_facility = ties[0];
+                } else {
+                    int random_index = random_int(ties.size());
+                    chosen_facility = ties[random_index];
+                }
+
+                int next_mask = mask | (1 << chosen_facility);
+                double future_val = V[next_mask];
+                double trial_cost = min_d + future_val;
+
+                total_cost_accumulator += trial_cost;
+            }
+
+            V[mask] = total_cost_accumulator / NUM_SAMPLES;
+        }
+    }
+
+    cout << "FINAL RESULT (Expected Total Dist): " << V[0] << "\n";
+
+    return 0;
+}
