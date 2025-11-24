@@ -17,7 +17,7 @@ This project implements a **Monte Carlo + Dynamic Programming solver** for an **
 - **Geometry helpers** to compute shortest circular distances and edgewise distances.
 - **Bitmask representation** of facility states (`0 = free`, `1 = occupied`).
 - **Backward induction DP**:
-  - Groups states by number of occupied facilities.
+  - Groups states by the number of occupied facilities.
   - Computes expected costs recursively, starting from terminal states (all facilities occupied).
 - **Monte Carlo simulation**:
   - Samples random arrivals (`NUM_SAMPLES` per state).
@@ -31,5 +31,5 @@ This project implements a **Monte Carlo + Dynamic Programming solver** for an **
 ## 🚀 Usage
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
+   https://github.com/RsRiad/OFA-Expected-Cost.git
    cd your-repo-name
