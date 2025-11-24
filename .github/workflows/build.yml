@@ -18,7 +18,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y g++
 
     - name: Compile program
-      run: g++ -std=c++17 -O2 main.cpp -o facility_dp
+      run: g++ -std=c++17 -O2 *.cpp -o facility_dp
 
     - name: Run program
       run: ./facility_dp
