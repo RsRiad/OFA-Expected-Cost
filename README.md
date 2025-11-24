@@ -32,4 +32,18 @@ This project implements a **Monte Carlo + Dynamic Programming solver** for an **
 1. Clone the repository:
    ```bash
    https://github.com/RsRiad/OFA-Expected-Cost.git
-   cd your-repo-name
+   cd OFA-Expected-Cost
+
+2. Compile the program:
+   ```bash
+   g++ -std=c++17 -O2 main.cpp -o facility_dp
+
+3. Run the executable:
+   ```bash
+   ./facility_dp
+
+⚙️ Configuration
+Adjust n (number of facilities) in main().
+Adjust NUM_SAMPLES (Monte Carlo iterations per state) for accuracy vs. runtime.
+   
+
